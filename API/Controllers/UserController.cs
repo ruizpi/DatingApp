@@ -24,7 +24,7 @@ namespace API.Controllers
         }
 
 
-        [HttpGet]
+        [HttpGet] // este se llama así   [Route("api/users")]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
             // return _context.Users.ToList();
