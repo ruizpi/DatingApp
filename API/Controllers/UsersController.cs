@@ -4,27 +4,24 @@ using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
 using API.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers
 {
-
-
-    [ApiController]
-    [Route("api/[controller]")]
-    //    [Route("api/users")]
-    public class UserController : ControllerBase
+    [Authorize]
+    public class UsersController : BaseApiController
     {
         private readonly DataContext _context;
 
-        public UserController(DataContext context)
+        public UsersController(DataContext context)
         {
             _context = context;
         }
 
-
-        [HttpGet] // este se llama así   [Route("api/users")]
+        [AllowAnonymous]
+        [HttpGet] // este se llama así   [Route("api/user")]
         public async Task<ActionResult<IEnumerable<AppUser>>> GetUsers()
         {
             // return _context.Users.ToList();
@@ -32,9 +29,11 @@ namespace API.Controllers
             return users;
         }
 
-        // https://localhost:5001/api/user/2
-        [HttpGet("{id}")]
 
+        // https://localhost:5001/api/user/2
+
+        [Authorize]
+        [HttpGet("{id}")]
         public async Task<ActionResult<AppUser>> GetUser(int id)
         {
             return  await _context.Users.FindAsync(id);

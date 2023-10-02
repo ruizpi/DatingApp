@@ -1,6 +1,4 @@
-using API.Data;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.EntityFrameworkCore;
+using API.Extensiones;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,25 +6,24 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
+builder.Services.AddApplicationServices(builder.Configuration);
+
 //ESTO LO HEMOS HECHO PARA PODER METER LA CONFIGURACION DE MI DATACONTEXT QUE VA A SER UNA CONEXION A SQLLITE
 // POR LO QUE HAY QUE INSTALAR EL SQLLITE SIN SER CORE
-builder.Services.AddDbContext<DataContext>(opt =>
-{
-    opt.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection"));
-});
 
-builder.Services.AddCors();
+builder.Services.AddIdentityServices(builder.Configuration);
 
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().WithOrigins("https://localhost:4200"));
+app.UseCors(builder => builder.AllowAnyHeader().AllowAnyMethod().
+        WithOrigins("https://localhost:4200"));
 
 
-app.UseHttpsRedirection();
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
